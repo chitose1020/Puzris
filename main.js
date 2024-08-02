@@ -154,7 +154,7 @@ function tick(){
     }
     if(free > DAS || free == 1){
       for(let i = 0; i < ARR; i++){
-        if(check_move(x,y))Puz_x = Puz_x + move;;
+        if(check_move(Puz_x + move,Puz_y))Puz_x = Puz_x + move;
       }
     }
   }
