@@ -17,7 +17,7 @@ const field_yy = y_half + block_size * (field_draw_y - 2) / 2;
 
 //--------------------let---------------------
 
-let DAS = 5;
+let DAS = 10;
 let ARR = 1;
 let SDF = 1;
 let FPS = 0;
@@ -81,6 +81,15 @@ let Puz_type = 0;
 let Puz_x = 0;
 let Puz_y = 0;
 let Next = [];
+let move = 0;
+let key = {
+ left : false,
+ right : false,
+};
+let key_time = {
+ left : 0,
+ right : 0,
+}
 //---------------------function---------------
 function draw_block(x,y,type){
   if(skin_load > 7){
@@ -93,6 +102,10 @@ var Ne = [1,2,3,4,5,6,7];
   for(let i = 6;i >= 0;i--){
    Next.push(Ne.splice(Math.floor(Math.random() * Ne.length), 1)[0]);
   }
+}
+function check_move(mx,my,type){
+  if(type == undefined)type = Puz;
+   
 }
 //----------------Tick--------------
 function tick(){
@@ -110,6 +123,42 @@ function tick(){
    Puz_y = field_draw_y;
    console.log(Puz,Puz_size);
   }
+//----------------操作--------------
+  if(key.left && key.right){
+    if(key_time.left == 0){
+     move = -1;
+    }
+    if(key_time.right == 0){
+     move = 1;
+    }
+   }else{
+   move = 0;
+    if(key.left){
+     move = -1;
+    }else{
+     key_time.left = 0;
+    }
+    if(key.right){
+     move = 1;
+    }else{
+     key_time.right = 0;
+    }
+  }
+  if(move){
+    if(move == -1){
+     var free = key_time.left;
+     key_time.left++;
+    }else{
+     var free = key_time.right;
+     key_time.right++;
+    }
+    if(free > DAS || free == 1){
+      for(let i = 0; i < ARR; i++){
+        if(check_move(x,y))Puz_x = Puz_x + move;;
+      }
+    }
+  }
+
 //----------------draw--------------
 ctx.clearRect(0,0,canvas_width,canvas_height);
 //フィールド描画
@@ -170,6 +219,22 @@ function game_init(){
  requestAnimationFrame(gameloop);
 }
 //---------------------イベント------------------
+document.addEventListener('keydown', (event) => {
+  if(event.key == "ArrowLeft"){
+      key.left = true;
+  }
+  if(event.key == "ArrowRight"){
+      key.right = true;
+  }
 
+});
+document.addEventListener('keyup', (event) => {
+  if(event.key == "ArrowLeft"){
+      key.left = false;
+  }
+  if(event.key == "ArrowRight"){
+      key.right = false;
+  }
+});
 
 game_init();
